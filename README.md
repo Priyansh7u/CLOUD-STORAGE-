@@ -35,7 +35,7 @@ Queue System (BullMQ / RabbitMQ)
         ↓
 Worker Service (Processing)
         ↓
-AWS S3 (File Storage)
+CLOUDINARY (File Storage)
         ↓
 PostgreSQL (Metadata DB)
         ↓
