@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const API =
-"http://localhost:5000/api/auth";
+"https://cloud-storage-api-f7em.onrender.com//api/auth";
 
 export const register =
 async(data)=>{
