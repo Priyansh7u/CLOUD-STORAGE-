@@ -5,46 +5,47 @@ const router = express.Router();
 const upload =
 require("../middleware/uploadMiddleware");
 
+const auth =
+require("../middleware/authMiddleware");
+
 const {
   uploadFile,
   getFiles,
   deleteFile,
   searchFiles,
   dashboardStats
-} = require("../controllers/fileController");
+} =
+require("../controllers/fileController");
 
 router.post(
   "/upload",
+  auth,
   upload.single("file"),
   uploadFile
 );
 
 router.get(
- "/search",
- searchFiles
+  "/search",
+  auth,
+  searchFiles
 );
 
 router.get(
   "/stats",
+  auth,
   dashboardStats
 );
 
 router.get(
   "/",
+  auth,
   getFiles
 );
 
 router.delete(
   "/:id",
+  auth,
   deleteFile
 );
-
-console.log({
-  uploadFile: typeof exports.uploadFile,
-  getFiles: typeof exports.getFiles,
-  deleteFile: typeof exports.deleteFile,
-  searchFiles: typeof exports.searchFiles,
-  dashboardStats: typeof exports.dashboardStats,
-});
 
 module.exports = router;

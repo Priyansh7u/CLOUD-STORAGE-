@@ -1,33 +1,65 @@
 import {
  BrowserRouter,
  Routes,
- Route
+ Route,
+ Navigate
 }
 from "react-router-dom";
 
 import Dashboard from "./pages/Dashboard";
 import Gallery from "./pages/Gallery";
+import Login from "./pages/Login";
 
 function App() {
-  return (
-    <BrowserRouter>
 
-      <Routes>
+ const token =
+ localStorage.getItem("token");
 
-        <Route
-          path="/"
-          element={<Dashboard />}
-        />
+ return (
 
-        <Route
-          path="/gallery"
-          element={<Gallery />}
-        />
+  <BrowserRouter>
 
-      </Routes>
+   <Routes>
 
-    </BrowserRouter>
-  );
+    <Route
+     path="/login"
+     element={
+      token
+      ?
+      <Navigate to="/" />
+      :
+      <Login />
+     }
+    />
+
+    <Route
+     path="/"
+     element={
+      token
+      ?
+      <Dashboard />
+      :
+      <Navigate to="/login" />
+     }
+    />
+
+    <Route
+     path="/gallery"
+     element={
+      token
+      ?
+      <Gallery />
+      :
+      <Navigate to="/login" />
+     }
+    />
+
+   </Routes>
+
+  </BrowserRouter>
+
+ );
+
 }
 
 export default App;

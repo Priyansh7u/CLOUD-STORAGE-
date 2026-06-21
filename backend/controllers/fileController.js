@@ -21,6 +21,7 @@ exports.uploadFile = async (req, res) => {
 
     const file =
       await File.create({
+        user: req.user._id,
         name: req.file.originalname,
         originalName:
           req.file.originalname,

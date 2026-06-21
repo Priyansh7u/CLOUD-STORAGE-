@@ -1,7 +1,14 @@
 const mongoose = require("mongoose");
 
-const fileSchema = new mongoose.Schema(
-  {
+const fileSchema = new mongoose.Schema({
+
+  user: {
+  type: require("mongoose").Schema.Types.ObjectId,
+  ref: "User",
+  required: true
+},
+
+
     name: {
       type: String,
       required: true,
