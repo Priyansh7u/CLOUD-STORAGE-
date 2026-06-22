@@ -1,10 +1,9 @@
 import axios from "axios";
 
 const API =
-"https://cloud-storage-api-f7em.onrender.com//api/auth";
+"https://cloud-storage-api-f7em.onrender.com/api/auth";
 
-export const register =
-async(data)=>{
+export const register = async (data) => {
 
  const response =
  await axios.post(
@@ -16,8 +15,7 @@ async(data)=>{
 
 };
 
-export const login =
-async(data)=>{
+export const login = async (data) => {
 
  const response =
  await axios.post(

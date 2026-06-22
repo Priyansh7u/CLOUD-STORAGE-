@@ -14,7 +14,12 @@ const app = express();
 
 connectDB();
 
-app.use(cors());
+app.use(
+  cors({
+    origin: "https://cloud-storage-sepia.vercel.app",
+    credentials: true
+  })
+);
 
 app.use(helmet());
 
