@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const API =
-"https://cloud-storage-api-f7em.onrender.com//api/files";
+"https://cloud-storage-api-f7em.onrender.com/api/files";
 
 const getToken = () => {
 
