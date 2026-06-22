@@ -14,13 +14,23 @@ const app = express();
 
 connectDB();
 
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://cloudwx.vercel.app"
+];
+
 app.use(
   cors({
-    origin: "https://cloud-storage-sepia.vercel.app",
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     credentials: true
   })
 );
-
 app.use(helmet());
 
 app.use(compression());
