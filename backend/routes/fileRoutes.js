@@ -13,7 +13,9 @@ const {
   getFiles,
   deleteFile,
   searchFiles,
-  dashboardStats
+  dashboardStats,
+  createShareLink,
+  getSharedFile
 } =
 require("../controllers/fileController");
 
@@ -46,6 +48,17 @@ router.delete(
   "/:id",
   auth,
   deleteFile
+);
+
+router.post(
+  "/share/:id",
+  auth,
+  createShareLink
+);
+
+router.get(
+  "/public/:shareId",
+  getSharedFile
 );
 
 module.exports = router;

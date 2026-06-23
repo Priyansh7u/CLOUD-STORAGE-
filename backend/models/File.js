@@ -29,7 +29,16 @@ const fileSchema = new mongoose.Schema({
     fileType: String,
 
     size: Number,
+    
+     shareId: {
+     type: String,
+     default: null
+    },
 
+   isPublic: {
+  type: Boolean,
+  default: false
+  },
     tags: [String],
 
     favourite: {

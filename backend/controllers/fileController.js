@@ -4,6 +4,9 @@ require("../utils/cloudinaryUpload");
 const cloudinary =
 require("../config/cloudinary");
 
+const { nanoid } =
+require("nanoid");
+
 exports.uploadFile = async (req, res) => {
   try {
 
@@ -30,6 +33,10 @@ exports.uploadFile = async (req, res) => {
         fileType: req.file.mimetype,
         size: req.file.size,
       });
+
+      if (global.io) {
+  global.io.emit("fileUploaded", file);
+    }
 
     res.status(201).json({
       success: true,
@@ -120,7 +127,9 @@ exports.deleteFile = async (
     }
 
     await file.deleteOne();
-
+    if (global.io) {
+  global.io.emit("fileDeleted", file._id);
+   }
     res.json({
       success: true,
       message: "Deleted Successfully",
@@ -206,6 +215,90 @@ async (req, res) => {
     res.status(500).json({
       success: false,
       message: error.message,
+    });
+
+  }
+
+};
+
+exports.createShareLink =
+async (req, res) => {
+
+  try {
+
+    const file =
+      await File.findById(
+        req.params.id
+      );
+
+    if (!file) {
+
+      return res.status(404).json({
+        success: false,
+        message: "File not found"
+      });
+
+    }
+
+    file.shareId =
+      nanoid(10);
+
+    file.isPublic =
+      true;
+
+    await file.save();
+
+    res.json({
+      success: true,
+      shareLink:
+      `http://localhost:5173/share/${file.shareId}`
+    });
+
+  } catch (error) {
+
+    res.status(500).json({
+      success: false,
+      message: error.message
+    });
+
+  }
+
+};
+exports.getSharedFile =
+async (req, res) => {
+
+  try {
+
+    const file =
+      await File.findOne({
+
+        shareId:
+        req.params.shareId,
+
+        isPublic: true
+
+      });
+
+    if (!file) {
+
+      return res.status(404).json({
+        success: false,
+        message:
+        "File not found"
+      });
+
+    }
+
+    res.json({
+      success: true,
+      file
+    });
+
+  } catch (error) {
+
+    res.status(500).json({
+      success: false,
+      message: error.message
     });
 
   }

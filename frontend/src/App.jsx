@@ -9,7 +9,7 @@ from "react-router-dom";
 import Dashboard from "./pages/Dashboard";
 import Gallery from "./pages/Gallery";
 import Login from "./pages/Login";
-
+import PublicFile from "./pages/PublicFile";
 function App() {
 
  const token =
@@ -53,6 +53,11 @@ function App() {
       <Navigate to="/login" />
      }
     />
+
+    <Route
+  path="/share/:shareId"
+  element={<PublicFile />}
+/>
 
    </Routes>
 
