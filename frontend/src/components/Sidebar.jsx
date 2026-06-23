@@ -13,20 +13,18 @@ function Icon({ name, active }) {
   }
 }
 
-function Sidebar() {
+function Sidebar({ onNavigate }) {
   const location = useLocation();
 
   const menuItems = [
     { name: "Dashboard", path: "/", icon: "home", badge: null },
     { name: "Gallery", path: "/gallery", icon: "gallery", badge: "New" },
-    
     { name: "Favorites", path: "/favorites", icon: "star", badge: null },
-    
   ];
 
   return (
     <div
-      className="w-72 min-h-screen p-5 flex flex-col relative"
+      className="w-64 sm:w-72 min-h-screen p-3 sm:p-4 md:p-5 flex flex-col relative"
       style={{
         background: 'rgba(10, 10, 15, 0.95)',
         borderRight: '1px solid rgba(99, 102, 241, 0.15)',
@@ -39,40 +37,41 @@ function Sidebar() {
         style={{ background: 'linear-gradient(180deg, #6366f1, #8b5cf6)' }} />
 
       {/* Logo Section */}
-      <div className="mb-10 relative">
-        <div className="flex items-center gap-3 mb-4">
-          <div className="w-10 h-10 rounded-xl flex items-center justify-center relative animate-glow"
+      <div className="mb-6 sm:mb-8 md:mb-10 relative">
+        <div className="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4">
+          <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl flex items-center justify-center relative animate-glow flex-shrink-0"
             style={{
               background: 'linear-gradient(135deg, #6366f1, #8b5cf6)',
               boxShadow: '0 0 30px rgba(99, 102, 241, 0.5)',
             }}>
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.8" strokeLinecap="round">
+            <svg width="18" height="18" sm-width="22" sm-height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.8" strokeLinecap="round">
               <path d="M7 18a4.5 4.5 0 0 1-1-8.9A5.5 5.5 0 0 1 16.7 7 4.5 4.5 0 0 1 17 18H7z" />
             </svg>
-            <div className="absolute inset-0 rounded-xl animate-ping opacity-20"
+            <div className="absolute inset-0 rounded-lg sm:rounded-xl animate-ping opacity-20"
               style={{ background: '#6366f1' }} />
           </div>
-          <div>
-            <h1 className="text-xl font-bold bg-gradient-to-r from-indigo-300 via-purple-300 to-indigo-200 bg-clip-text text-transparent"
+          <div className="min-w-0">
+            <h1 className="text-lg sm:text-xl font-bold bg-gradient-to-r from-indigo-300 via-purple-300 to-indigo-200 bg-clip-text text-transparent truncate"
               style={{ fontFamily: "'Clash Display', sans-serif" }}>
               CloudWX
             </h1>
           </div>
         </div>
-        <p className="text-xs tracking-widest uppercase" style={{ color: '#64748b', fontFamily: "'JetBrains Mono', monospace" }}>
+        <p className="text-[10px] sm:text-xs tracking-widest uppercase truncate" style={{ color: '#64748b', fontFamily: "'JetBrains Mono', monospace" }}>
           Private Storage
         </p>
       </div>
 
       {/* Navigation */}
-      <div className="space-y-1.5 flex-1">
+      <div className="space-y-1 sm:space-y-1.5 flex-1">
         {menuItems.map((item) => {
           const active = location.pathname === item.path;
           return (
             <Link
               key={item.path}
               to={item.path}
-              className="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 group relative overflow-hidden"
+              onClick={onNavigate}
+              className="flex items-center gap-2 sm:gap-3 px-3 sm:px-4 py-2.5 sm:py-3 rounded-xl transition-all duration-300 group relative overflow-hidden"
               style={{
                 background: active ? 'linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(139, 92, 246, 0.1))' : 'transparent',
                 border: active ? '1px solid rgba(99, 102, 241, 0.3)' : '1px solid transparent',
@@ -86,19 +85,19 @@ function Sidebar() {
               
               {/* Active Indicator */}
               {active && (
-                <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 rounded-r-full animate-glow"
+                <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 sm:h-8 rounded-r-full animate-glow"
                   style={{ background: 'linear-gradient(180deg, #6366f1, #8b5cf6)' }} />
               )}
 
-              <span className="transition-transform duration-300 group-hover:scale-110 group-hover:rotate-6">
+              <span className="transition-transform duration-300 group-hover:scale-110 group-hover:rotate-6 flex-shrink-0">
                 <Icon name={item.icon} active={active} />
               </span>
-              <span className="text-sm font-medium flex-1" style={{ color: active ? '#f1f5f9' : '#94a3b8' }}>
+              <span className="text-xs sm:text-sm font-medium flex-1 truncate" style={{ color: active ? '#f1f5f9' : '#94a3b8' }}>
                 {item.name}
               </span>
               
               {item.badge && (
-                <span className="text-xs px-2 py-0.5 rounded-full font-bold"
+                <span className="text-[10px] sm:text-xs px-1.5 sm:px-2 py-0.5 rounded-full font-bold flex-shrink-0"
                   style={{
                     background: active ? 'linear-gradient(135deg, #6366f1, #8b5cf6)' : 'rgba(99, 102, 241, 0.15)',
                     color: active ? 'white' : '#8b5cf6',
@@ -114,7 +113,7 @@ function Sidebar() {
       </div>
 
       {/* Storage Section with Progress Animation */}
-      <div className="rounded-2xl p-5 relative overflow-hidden group cursor-pointer"
+      <div className="rounded-xl sm:rounded-2xl p-3 sm:p-4 md:p-5 relative overflow-hidden group cursor-pointer"
         style={{
           background: 'linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.05))',
           border: '1px solid rgba(99, 102, 241, 0.2)',
@@ -124,22 +123,22 @@ function Sidebar() {
           style={{ background: 'linear-gradient(135deg, rgba(99, 102, 241, 0.2), transparent)' }} />
         
         <div className="relative z-10">
-          <div className="flex items-center justify-between mb-3">
-            <h3 className="text-xs uppercase tracking-widest font-bold" style={{ color: '#94a3b8', fontFamily: "'JetBrains Mono', monospace" }}>
+          <div className="flex items-center justify-between mb-2 sm:mb-3">
+            <h3 className="text-[10px] sm:text-xs uppercase tracking-widest font-bold truncate" style={{ color: '#94a3b8', fontFamily: "'JetBrains Mono', monospace" }}>
               Storage
             </h3>
-            <span className="text-xs font-bold" style={{ color: '#8b5cf6' }}>35%</span>
+            <span className="text-[10px] sm:text-xs font-bold flex-shrink-0" style={{ color: '#8b5cf6' }}>35%</span>
           </div>
           
-          <div className="w-full h-2 rounded-full overflow-hidden" style={{ background: 'rgba(15, 15, 25, 0.8)' }}>
+          <div className="w-full h-1.5 sm:h-2 rounded-full overflow-hidden" style={{ background: 'rgba(15, 15, 25, 0.8)' }}>
             <div className="h-full rounded-full relative overflow-hidden animate-pulse" style={{ width: "35%" }}>
               <div className="absolute inset-0" style={{ background: 'linear-gradient(90deg, #6366f1, #8b5cf6, #3b82f6)' }} />
               <div className="absolute inset-0 animate-shine" style={{ background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent)' }} />
             </div>
           </div>
           
-          <p className="text-xs mt-3" style={{ color: '#64748b', fontFamily: "'JetBrains Mono', monospace" }}>
-            3.5 GB of 10 GB used
+          <p className="text-[10px] sm:text-xs mt-2 sm:mt-3 truncate" style={{ color: '#64748b', fontFamily: "'JetBrains Mono', monospace" }}>
+            --- of Unlimited GB used
           </p>
         </div>
       </div>
