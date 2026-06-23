@@ -251,7 +251,7 @@ async (req, res) => {
     res.json({
       success: true,
       shareLink:
-      `http://localhost:5173/share/${file.shareId}`
+    `${process.env.FRONTEND_URL}/share/${file.shareId}`
     });
 
   } catch (error) {
