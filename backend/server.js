@@ -6,8 +6,6 @@ const helmet = require("helmet");
 const compression = require("compression");
 const morgan = require("morgan");
 const rateLimit = require("express-rate-limit");
-const http = require("http");
-const { Server } = require("socket.io");
 
 const connectDB = require("./config/database");
 const authRoutes = require("./routes/authRoutes");
@@ -27,29 +25,29 @@ const allowedOrigins = [
   process.env.CLIENT_URL
 ].filter(Boolean);
 
-app.use(
-  cors({
-    origin: function (origin, callback) {
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        console.warn(`⚠️  Blocked by CORS: ${origin}`);
-        callback(new Error("Not allowed by CORS"));
-      }
-    },
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
-    allowedHeaders: [
-      "Content-Type",
-      "Authorization",
-      "X-Requested-With",
-      "Accept",
-      "Origin"
-    ],
-    exposedHeaders: ["Content-Range", "X-Content-Range"],
-    maxAge: 86400
-  })
-);
+app.use(cors({
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      console.warn(`⚠️  Blocked by CORS: ${origin}`);
+      callback(null, true);
+    }
+  },
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+  allowedHeaders: [
+    "Content-Type",
+    "Authorization",
+    "X-Requested-With",
+    "Accept",
+    "Origin"
+  ],
+  exposedHeaders: ["Content-Range", "X-Content-Range"],
+  maxAge: 86400
+}));
+
+app.options("/*splat", cors());
 
 app.use(
   helmet({
@@ -222,89 +220,6 @@ app.use((err, req, res, next) => {
   });
 });
 
-const server = http.createServer(app);
-
-const io = new Server(server, {
-  cors: {
-    origin: allowedOrigins,
-    methods: ["GET", "POST"],
-    credentials: true,
-    allowedHeaders: ["Authorization", "Content-Type"]
-  },
-  pingTimeout: 60000,
-  pingInterval: 25000,
-  connectTimeout: 45000,
-  maxHttpBufferSize: 1e8,
-  transports: ["websocket", "polling"],
-  allowEIO3: true,
-  serveClient: false
-});
-
-global.io = io;
-
-io.on("connection", (socket) => {
-  console.log(`✅ User Connected: ${socket.id} | Transport: ${socket.conn.transport.name} | Time: ${new Date().toISOString()}`);
-
-  socket.on("join", (userId) => {
-    if (userId) {
-      socket.join(`user_${userId}`);
-      console.log(`👤 User ${userId} joined their room`);
-    }
-  });
-
-  socket.on("fileUploaded", (data) => {
-    console.log(`📤 File uploaded notification from ${socket.id}:`, data?.fileName || "Unknown file");
-    socket.broadcast.emit("fileUploaded", data);
-  });
-
-  socket.on("fileDeleted", (data) => {
-    console.log(`🗑️  File deleted notification from ${socket.id}:`, data?.fileId || "Unknown file");
-    socket.broadcast.emit("fileDeleted", data);
-  });
-
-  socket.on("error", (error) => {
-    console.error(`❌ Socket error for ${socket.id}:`, error.message);
-  });
-
-  socket.on("disconnect", (reason) => {
-    console.log(`❌ User Disconnected: ${socket.id} | Reason: ${reason} | Time: ${new Date().toISOString()}`);
-    
-    if (reason === "transport close") {
-      console.log(`   ↳ Connection lost for ${socket.id}, client may reconnect`);
-    }
-  });
-
-  socket.on("reconnect", (attemptNumber) => {
-    console.log(`🔄 User ${socket.id} reconnected after ${attemptNumber} attempts`);
-  });
-});
-
-process.on("SIGTERM", () => {
-  console.log("🛑 SIGTERM received. Shutting down gracefully...");
-  
-  io.close(() => {
-    console.log("🔌 Socket.io server closed");
-  });
-  
-  server.close(() => {
-    console.log("🚫 HTTP server closed");
-    process.exit(0);
-  });
-});
-
-process.on("SIGINT", () => {
-  console.log("🛑 SIGINT received. Shutting down gracefully...");
-  
-  io.close(() => {
-    console.log("🔌 Socket.io server closed");
-  });
-  
-  server.close(() => {
-    console.log("🚫 HTTP server closed");
-    process.exit(0);
-  });
-});
-
 process.on("uncaughtException", (error) => {
   console.error("💥 Uncaught Exception:", error);
   process.exit(1);
@@ -317,7 +232,7 @@ process.on("unhandledRejection", (reason, promise) => {
 const PORT = process.env.PORT || 5000;
 const HOST = process.env.HOST || "0.0.0.0";
 
-server.listen(PORT, HOST, () => {
+app.listen(PORT, HOST, () => {
   console.log("╔══════════════════════════════════════════╗");
   console.log("║   🚀 Personal Cloud Server Running       ║");
   console.log(`║   📍 Port: ${PORT}                          ║`);
@@ -327,4 +242,4 @@ server.listen(PORT, HOST, () => {
   console.log("╚══════════════════════════════════════════╝");
 });
 
-module.exports = { app, server, io };
+module.exports = app;

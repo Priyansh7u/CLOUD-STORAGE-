@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import socket from "../socket";
 import {
   getFiles,
   deleteFile,
@@ -12,19 +11,6 @@ function Gallery() {
 
   useEffect(() => {
     loadFiles();
-
-    socket.on("fileUploaded", () => {
-      loadFiles();
-    });
-
-    socket.on("fileDeleted", () => {
-      loadFiles();
-    });
-
-    return () => {
-      socket.off("fileUploaded");
-      socket.off("fileDeleted");
-    };
   }, []);
 
   const loadFiles = async () => {
@@ -74,7 +60,6 @@ function Gallery() {
   return (
     <div>
       {files.length === 0 ? (
-        /* Empty State - Modern & Beautiful */
         <div className="text-center py-20">
           <div className="relative inline-block mb-8">
             <div className="w-28 h-28 rounded-3xl flex items-center justify-center relative z-10 animate-glow"
@@ -103,7 +88,6 @@ function Gallery() {
           </p>
         </div>
       ) : (
-        /* Gallery Grid - Stunning Layout */
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
           {files.map((file, index) => (
             <div
@@ -115,11 +99,9 @@ function Gallery() {
                 animation: `fadeInUp 0.5s ease-out ${index * 0.08}s both`,
               }}>
               
-              {/* Hover Glow Border */}
               <div className="absolute -inset-0.5 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-xl pointer-events-none"
                 style={{ background: 'linear-gradient(135deg, rgba(99, 102, 241, 0.3), rgba(139, 92, 246, 0.3), rgba(59, 130, 246, 0.3))' }} />
 
-              {/* File Preview Area */}
               <div className="relative overflow-hidden rounded-t-2xl" style={{ height: '240px', background: '#0a0a0f' }}>
                 
                 {file.fileType?.startsWith("image") ? (
@@ -130,11 +112,9 @@ function Gallery() {
                       className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                       onClick={() => setSelectedFile(file)}
                     />
-                    {/* Gradient Overlay */}
                     <div className="absolute inset-0 transition-opacity duration-500 opacity-0 group-hover:opacity-100"
                       style={{ background: 'linear-gradient(to top, rgba(10, 10, 15, 0.95) 0%, rgba(10, 10, 15, 0.2) 50%, transparent 100%)' }} />
                     
-                    {/* File Type Badge */}
                     <div className="absolute top-3 left-3 px-2.5 py-1.5 rounded-lg text-xs font-semibold backdrop-blur-md flex items-center gap-1.5"
                       style={{ background: 'rgba(10, 10, 15, 0.8)', border: '1px solid rgba(99, 102, 241, 0.4)', color: '#a5b4fc' }}>
                       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -153,7 +133,6 @@ function Gallery() {
                       <source src={file.url} type={file.fileType} />
                     </video>
                     
-                    {/* Play Button */}
                     <div className="absolute inset-0 flex items-center justify-center">
                       <div className="w-16 h-16 rounded-full flex items-center justify-center transition-all duration-300 group-hover:scale-110 backdrop-blur-md"
                         style={{ background: 'rgba(10, 10, 15, 0.7)', border: '2px solid #8b5cf6' }}>
@@ -163,7 +142,6 @@ function Gallery() {
                       </div>
                     </div>
 
-                    {/* Video Badge */}
                     <div className="absolute top-3 left-3 px-2.5 py-1.5 rounded-lg text-xs font-semibold backdrop-blur-md flex items-center gap-1.5"
                       style={{ background: 'rgba(10, 10, 15, 0.8)', border: '1px solid rgba(139, 92, 246, 0.4)', color: '#c4b5fd' }}>
                       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -174,7 +152,6 @@ function Gallery() {
                   </>
                 ) : (
                   <>
-                    {/* Document Preview */}
                     <div className="w-full h-full flex flex-col items-center justify-center cursor-pointer transition-all duration-500 group-hover:scale-105"
                       style={{ background: 'linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 100%)' }}
                       onClick={() => setSelectedFile(file)}>
@@ -195,7 +172,6 @@ function Gallery() {
                       </span>
                     </div>
 
-                    {/* Document Badge */}
                     <div className="absolute top-3 left-3 px-2.5 py-1.5 rounded-lg text-xs font-semibold backdrop-blur-md flex items-center gap-1.5"
                       style={{ background: 'rgba(10, 10, 15, 0.8)', border: '1px solid rgba(59, 130, 246, 0.4)', color: '#93c5fd' }}>
                       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -207,9 +183,7 @@ function Gallery() {
                   </>
                 )}
 
-                {/* Action Buttons - Slide In on Hover */}
                 <div className="absolute top-3 right-3 flex gap-2 transform transition-all duration-500 translate-x-20 group-hover:translate-x-0 opacity-0 group-hover:opacity-100">
-                  {/* Share Button */}
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
@@ -224,7 +198,6 @@ function Gallery() {
                     </svg>
                   </button>
 
-                  {/* Delete Button */}
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
@@ -239,7 +212,6 @@ function Gallery() {
                   </button>
                 </div>
 
-                {/* View Preview Button - Appears on Hover */}
                 <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 transition-all duration-500 opacity-0 group-hover:opacity-100 translate-y-4 group-hover:translate-y-0">
                   <button
                     onClick={() => setSelectedFile(file)}
@@ -254,7 +226,6 @@ function Gallery() {
                 </div>
               </div>
 
-              {/* File Info */}
               <div className="p-4">
                 <h3 className="font-semibold truncate mb-2" style={{ color: '#f1f5f9', fontSize: '0.9rem' }}>
                   {file.name}
@@ -267,7 +238,6 @@ function Gallery() {
                 </div>
               </div>
 
-              {/* Bottom Accent Line */}
               <div className="h-0.5 w-full transition-all duration-500 scale-x-0 group-hover:scale-x-100 origin-left"
                 style={{ background: 'linear-gradient(90deg, #6366f1, #8b5cf6, transparent)' }} />
             </div>
@@ -275,7 +245,6 @@ function Gallery() {
         </div>
       )}
 
-      {/* Preview Modal - Premium Design */}
       {selectedFile && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6"
@@ -291,7 +260,6 @@ function Gallery() {
             }}
             onClick={(e) => e.stopPropagation()}>
             
-            {/* Modal Header */}
             <div className="flex items-center justify-between p-5 sm:p-6" style={{ borderBottom: '1px solid rgba(99, 102, 241, 0.2)' }}>
               <div className="flex items-center gap-4 min-w-0">
                 <div className="w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0 animate-glow"
@@ -324,7 +292,6 @@ function Gallery() {
               </div>
               
               <div className="flex items-center gap-2">
-                {/* Share Button in Modal */}
                 <button
                   onClick={() => handleShare(selectedFile._id)}
                   className="hidden sm:flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300 hover:scale-105"
@@ -337,7 +304,6 @@ function Gallery() {
                   Share
                 </button>
 
-                {/* Close Button */}
                 <button
                   onClick={() => setSelectedFile(null)}
                   className="w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-300 hover:scale-110 hover:rotate-90"
@@ -350,7 +316,6 @@ function Gallery() {
               </div>
             </div>
 
-            {/* Modal Content */}
             <div className="p-4 sm:p-6">
               {selectedFile.fileType?.startsWith("image") ? (
                 <div className="flex items-center justify-center rounded-2xl overflow-hidden" style={{ background: '#0a0a0f', minHeight: '400px' }}>
@@ -376,7 +341,6 @@ function Gallery() {
               )}
             </div>
 
-            {/* Modal Footer for Mobile */}
             <div className="p-4 sm:hidden flex gap-3" style={{ borderTop: '1px solid rgba(99, 102, 241, 0.2)' }}>
               <button
                 onClick={() => handleShare(selectedFile._id)}
